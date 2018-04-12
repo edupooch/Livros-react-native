@@ -1,14 +1,17 @@
 import React from "react";
 import {TabNavigator, TabBarBottom, TabBarTop} from 'react-navigation';
 import {MaterialIcons} from '@expo/vector-icons'
-import {Constants} from 'expo'
-import LivrosScreen from './LivrosScreen'
-import LojasScreen from './LojasScreen'
+
+import LivrosStack from "./LivrosStack";
+import LojasStack from "./LojasStack";
+
+const Livros = LivrosStack;
+const Lojas = LojasStack;
 
 export default TabNavigator(
     {
-        Home: {screen: LivrosScreen},
-        Other: {screen: LojasScreen},
+        Home: {screen: Livros},
+        Other: {screen: Lojas},
     },
     {
         navigationOptions: ({navigation}) => ({
@@ -27,16 +30,15 @@ export default TabNavigator(
             },
         }),
         tabBarOptions: {
-
             // activeTintColor: '#2196F3',
             // inactiveTintColor: 'grey',
-            style: {
-                marginTop: Constants.statusBarHeight
-            }
+            // style: {
+            //     marginTop: Constants.statusBarHeight
+            // }
         },
 
-        // tabBarComponent: TabBarTop,
-        // tabBarPosition: 'bottom',
+        tabBarComponent: TabBarBottom,
+        tabBarPosition: 'bottom',
         animationEnabled: false,
         // swipeEnabled: false,
 

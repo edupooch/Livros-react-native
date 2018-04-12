@@ -1,12 +1,18 @@
-import {AsyncStorage, Button, StyleSheet, View} from "react-native";
 import React from "react";
+import {AsyncStorage, StyleSheet, View} from "react-native";
 import {livros} from "./livros"
 import ListaLivros from "./listaLivros"
 
-export default class LivrosScreen extends React.Component {
+export default class ListaLojasScreen extends React.Component {
     static navigationOptions = {
-        title: 'Livros',
-        paddingTop: '100'
+        title: 'Lojas',
+        headerStyle: {
+            backgroundColor: '#2196F3',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+            fontWeight: 'bold',
+        },
     };
 
     constructor(props) {
@@ -36,6 +42,8 @@ export default class LivrosScreen extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor: '#fafafa',
+        padding: 10,
         flex: 1,
     },
 });
