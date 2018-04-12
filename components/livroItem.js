@@ -1,7 +1,7 @@
 import React from 'react'
 import {Text, StyleSheet, View, TouchableOpacity, Image} from 'react-native';
 
-const ItemLivro = props => {
+const LivroItem = props => {
 
     return (
         <View style={styles.card}>
@@ -95,4 +95,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default ItemLivro;
+export default LivroItem;

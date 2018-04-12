@@ -1,10 +1,10 @@
 import React from "react";
 import {FlatList} from "react-native";
-import ItemLivro from "./itemLivro";
+import LivroItem from "./livroItem";
 
-const renderItem = obj => <ItemLivro {...(obj.item)}/>;
+const renderItem = obj => <LivroItem {...(obj.item)}/>;
 
-const ListaLivros = props => {
+const LivroLista = props => {
     return (
         <FlatList
             renderItem={renderItem}
@@ -13,4 +13,4 @@ const ListaLivros = props => {
     )
 };
 
-export default ListaLivros;
+export default LivroLista;

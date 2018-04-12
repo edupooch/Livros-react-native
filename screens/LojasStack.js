@@ -1,11 +1,11 @@
 import React from "react";
 import {StackNavigator} from 'react-navigation';
-import ListaLojasScreen from "./ListaLojasScreen";
+import LojaListaScreen from "./LojaListaScreen";
 
 export default StackNavigator({
 
         ListaLojas: {
-            screen: ListaLojasScreen,
+            screen: LojaListaScreen,
         },
     },
 

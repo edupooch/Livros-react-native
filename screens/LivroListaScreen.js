@@ -1,9 +1,9 @@
 import React from "react";
 import {AsyncStorage, StyleSheet, View} from "react-native";
-import {livros} from "./livros"
-import ListaLivros from "./listaLivros"
+import {livros} from "../modelo/livros"
+import LivroLista from "../components/livroLista"
 
-export default class ListaLivrosScreen extends React.Component {
+export default class LivroListaScreen extends React.Component {
     static navigationOptions = {
         title: 'Livros',
         headerStyle: {
@@ -25,7 +25,7 @@ export default class ListaLivrosScreen extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <ListaLivros livros={this.state.livros}/>
+                <LivroLista livros={this.state.livros}/>
             </View>
         );
     }

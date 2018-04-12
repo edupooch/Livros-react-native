@@ -1,10 +1,10 @@
 import React from "react";
 import {StackNavigator} from 'react-navigation';
-import ListaLivrosScreen from "./ListaLivrosScreen";
+import LivroListaScreen from "./LivroListaScreen";
 
 export default StackNavigator({
         Home: {
-            screen: ListaLivrosScreen,
+            screen: LivroListaScreen,
         },
     },
 
