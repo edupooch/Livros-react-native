@@ -1,28 +1,21 @@
-// In App.js in a new project
-
 import React from 'react';
-import {StackNavigator} from 'react-navigation';
 
-import HomeScreen from './HomeScreen'
-import DetailsScreen from './DetailsScreen'
+import {StackNavigator, TabNavigator, SwitchNavigator} from 'react-navigation'; // Version can be specified in package.json
 
+import LoginScreen from './LoginScreen'
+import AuthLoadingScreen from './AuthLoadingScreen'
+import TabNavigation from './TabNavigation'
 
-const RootStack = StackNavigator(
+const AppStack = TabNavigation;
+const AuthStack = StackNavigator({SignIn: LoginScreen});
+
+export default SwitchNavigator(
     {
-        Home: {
-            screen: HomeScreen,
-        },
-        Details: {
-            screen: DetailsScreen,
-        },
+        AuthLoading: AuthLoadingScreen,
+        App: AppStack,
+        Auth: AuthStack,
     },
     {
-        initialRouteName: 'Home',
+        initialRouteName: 'AuthLoading',
     }
 );
-
-export default class App extends React.Component {
-    render() {
-        return <RootStack/>;
-    }
-}
