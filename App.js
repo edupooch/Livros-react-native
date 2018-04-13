@@ -2,9 +2,9 @@ import React from 'react';
 
 import {StackNavigator,  SwitchNavigator} from 'react-navigation';
 
-import LoginScreen from './screens/LoginScreen'
-import AuthLoadingScreen from './screens/AuthLoadingScreen'
-import TabNavigation from './screens/TabNavigation'
+import LoginScreen from './src/screens/LoginScreen'
+import AuthLoadingScreen from './src/screens/AuthLoadingScreen'
+import TabNavigation from './src/navigation/TabNavigation'
 
 const AppTab = TabNavigation;
 const AuthStack = StackNavigator({SignIn: LoginScreen});

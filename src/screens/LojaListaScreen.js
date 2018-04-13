@@ -7,7 +7,7 @@ export default class LojaListaScreen extends React.Component {
     static navigationOptions = {
         title: 'Lojas',
         headerStyle: {
-            backgroundColor: '#2196F3',
+            backgroundColor: '#00897B',
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -25,7 +25,7 @@ export default class LojaListaScreen extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <LivroLista livros={this.state.livros}/>
+
             </View>
         );
     }

@@ -1,5 +1,5 @@
 import React from "react";
-import {TabNavigator, TabBarBottom, TabBarTop} from 'react-navigation';
+import {TabNavigator, TabBarBottom} from 'react-navigation';
 import {MaterialIcons} from '@expo/vector-icons'
 
 import LivrosStack from "./LivrosStack";
@@ -30,7 +30,7 @@ export default TabNavigator(
             },
         }),
         tabBarOptions: {
-            // activeTintColor: '#2196F3',
+            activeTintColor: '#00897B',
             // inactiveTintColor: 'grey',
             // style: {
             //     marginTop: Constants.statusBarHeight
