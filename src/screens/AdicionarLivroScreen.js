@@ -44,7 +44,6 @@ export default class AdicionarLivroScreen extends React.Component {
       loja: this.state.loja
     };
     let adicionarLivro = this.state.adicionarLivro;
-    console.log(adicionarLivro.type);
     adicionarLivro(livro);
 
     this.props.navigation.goBack()
@@ -169,7 +168,7 @@ export default class AdicionarLivroScreen extends React.Component {
                   style={styles.inputStyle}
                   value={this.state.loja}
                   onChangeText={(loja) => this.setState({loja})}
-                  onSubmitEditing={() => this.salvarSala}
+                  onSubmitEditing={this.salvarSala}
                 />
 
               </View>

@@ -54,7 +54,9 @@ export default class LivroListaScreen extends React.Component {
             value={this.state.input}
             style={styles.campoAdicionar}
             underlineColorAndroid={'#ccc'}
-            placeholder="Adicionar novo livro"/>
+            placeholder="Adicionar novo livro"
+            onSubmitEditing={this.cliqueAdd}
+          />
 
           <TouchableOpacity
             onPress={this.cliqueAdd}
