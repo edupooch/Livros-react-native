@@ -9,7 +9,7 @@ const LivroItem = props => {
 
       <Image
         style={styles.capa}
-        source={props.item.capa}/>
+        source={props.item.capa !== "" ? props.item.capa : require('../img/default.png')}/>
 
       <View
         style={styles.containerInfoCards}>
@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
   },
 
   capa: {
+    backgroundColor: '#00897B',
     height: 90,
     borderTopLeftRadius: 3,
     borderBottomLeftRadius: 3,

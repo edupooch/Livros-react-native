@@ -28,7 +28,20 @@ export default class LivroListaScreen extends React.Component {
   };
 
   cliqueAdd = () => {
-    this.props.navigation.navigate('AdicionarLivro', {titulo: this.state.input});
+    this.props.navigation.navigate('AdicionarLivro',
+      {
+        titulo: this.state.input,
+        onSubmit: this.adicionarLivro
+      }
+    );
+  };
+
+  adicionarLivro = (livro) => {
+    this.setState(prevState => (
+      {
+        input: '',
+        livros: [...prevState.livros, (livro)]
+      }))
   };
 
   render() {
@@ -65,10 +78,6 @@ export default class LivroListaScreen extends React.Component {
     );
   }
 
-  _showMoreApp = () => {
-    this.props.navigation.navigate('Other');
-  };
-
   _signOutAsync = async () => {
     await AsyncStorage.clear();
     this.props.navigation.navigate('Auth');
@@ -94,6 +103,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     padding: 5,
   },
+
   campoAdicionar: {
     flex: 6,
     paddingLeft: 4,

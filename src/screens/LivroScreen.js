@@ -22,18 +22,21 @@ export default class LivroScreen extends React.Component {
         style={styles.container}>
 
         <ImageBackground
-          source={livro.capa}
+          source={livro.capa !== "" ? livro.capa : null}
           style={styles.card}>
 
           <View style={styles.infoContainer}>
 
-            <Image source={livro.capa}
-                   style={styles.capa}/>
+            <Image
+              source={livro.capa !== "" ? livro.capa : null}
+              style={styles.capa}/>
 
-            <View style={styles.infoTextoContainer}>
+            <View
+              style={styles.infoTextoContainer}>
 
               <View
                 style={styles.campoContainer}>
+
                 <Text
                   style={styles.textoLabel}>
                   Título:
@@ -43,10 +46,12 @@ export default class LivroScreen extends React.Component {
                   style={styles.textoValor}>
                   {livro.titulo}
                 </Text>
+
               </View>
 
               <View
                 style={styles.campoContainer}>
+
                 <Text
                   style={styles.textoLabel}>
                   Autor:
@@ -74,6 +79,7 @@ export default class LivroScreen extends React.Component {
 
               <View
                 style={styles.campoContainer}>
+
                 <Text
                   style={styles.textoLabel}>
                   Loja:
@@ -83,10 +89,10 @@ export default class LivroScreen extends React.Component {
                   style={styles.textoValor}>
                   {livro.loja}
                 </Text>
+
               </View>
             </View>
           </View>
-
         </ImageBackground>
 
         <View style={styles.space}/>
