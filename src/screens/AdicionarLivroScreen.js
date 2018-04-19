@@ -1,9 +1,9 @@
 import React from "react";
-import {Button, Image, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
-import {MaterialIcons} from '@expo/vector-icons'
+import {Button, Image, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {MaterialIcons, FontAwesome} from '@expo/vector-icons'
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import CameraExample from "../components/camera";
-import Exponent, {Constants, ImagePicker, registerRootComponent} from 'expo';
+import {ImagePicker, DocumentPicker} from 'expo';
+import Modal from 'react-native-modal';
 
 export default class AdicionarLivroScreen extends React.Component {
 
@@ -36,7 +36,7 @@ export default class AdicionarLivroScreen extends React.Component {
       loja: "",
       adicionarLivro: adicionarLivro,
       isDateTimePickerVisible: false,
-      showCamera: false,
+      modalVisible: false,
     };
   }
 
@@ -63,7 +63,10 @@ export default class AdicionarLivroScreen extends React.Component {
     this.refs[nextField].focus()
   };
 
-  _showDateTimePicker = () => this.setState({isDatePickerVisible: true});
+  _showDateTimePicker = () => {
+    Keyboard.dismiss();
+    this.setState({isDatePickerVisible: true})
+  };
 
   _hideDateTimePicker = () => this.setState({isDatePickerVisible: false});
 
@@ -77,13 +80,34 @@ export default class AdicionarLivroScreen extends React.Component {
   _showCamera = () => this.setState({showCamera: true});
 
   _takePhoto = async () => {
-    let pickerResult = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-    });
+    this.setModalVisible(false);
 
-    console.log(pickerResult.uri)
-    this.setState({capa: pickerResult.uri})
+    let pickerResult = await ImagePicker.launchCameraAsync({
+      // allowsEditing: true,
+      // aspect: [4, 3],
+      // base64: true,
+      quality: 0.7, //qualidade da compressão
+    });
+    if (pickerResult.uri !== undefined)
+      this.setState({capa: pickerResult.uri});
+  };
+
+  _pickImage = async () => {
+    this.setModalVisible(false);
+
+    let pickerResult = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: 'Images',
+      quality: 0.7 //qualidade da compressão
+    });
+    if (pickerResult.uri !== undefined)
+      this.setState({capa: pickerResult.uri});
+  };
+
+  _pickDocument = async () => {
+    let pickerResult = await DocumentPicker.getDocumentAsync({type: 'application/pdf'});
+    console.log(pickerResult.uri);
+    // if (pickerResult.uri !== undefined)
+    this.setState({pdf: pickerResult.uri});
   };
 
   formatDate = (date) => {
@@ -101,92 +125,138 @@ export default class AdicionarLivroScreen extends React.Component {
     return day + '/' + month + '/' + year;
   };
 
+  setModalVisible(visible) {
+    this.setState({modalVisible: visible});
+  }
 
   render() {
-    if (this.state.showCamera) {
-      return (<CameraExample/>)
-    }
-
+    let imageUri = this.state.capa;
     return (
+
       <View
         style={styles.container}>
 
-        <View style={styles.card}>
-          <View
-            style={styles.infoTextoContainer}>
+        <Modal
+          onRequestClose={() => this.setModalVisible(false)}
+          isVisible={this.state.modalVisible}>
 
-            <Text style={[styles.textoLabel, styles.textoTopo]}>
-              Insira as informações abaixo para adicionar um livro:
-            </Text>
+          <View style={styles.modalContent}>
 
-            <View style={styles.horizontal}>
+            <Text>Selecionar imagem da:</Text>
 
+            <View
+              style={styles.opcoesImagem}>
 
-              <View style={styles.containerTituloAutor}>
-                <View
-                  style={styles.campoContainer}>
+              <TouchableOpacity
+                style={styles.capaContainer}
+                onPress={this._takePhoto}>
 
+                <View>
                   <MaterialIcons
-                    name={'book'}
-                    size={30}
+                    name={'camera-alt'}
+                    size={50}
                     color={'#4b4b4b'}/>
 
-                  <View
-                    style={styles.textoContainer}>
-
-                    <Text
-                      style={styles.textoLabel}>
-                      Título:
-                    </Text>
-
-                    <TextInput
-                      ref='titulo'
-                      style={styles.inputStyle}
-                      value={this.state.titulo}
-                      error={"Insira um valor para o título"}
-                      onChangeText={(titulo) => this.setState({titulo})}
-                      returnKeyType='next'
-                      blurOnSubmit={false}
-                      onSubmitEditing={() => this._focusNextField('autor')}/>
-                  </View>
+                  <Text
+                    style={styles.textoBotao}>
+                    Câmera
+                  </Text>
                 </View>
+              </TouchableOpacity>
 
-                <View
-                  style={styles.campoContainer}>
+              <TouchableOpacity
+                style={styles.capaContainer}
+                onPress={this._pickImage}>
+
+                <View>
                   <MaterialIcons
-                    name={'person'}
-                    size={30}
+                    name={'image'}
+                    size={50}
                     color={'#4b4b4b'}/>
 
-                  <View style={styles.textoContainer}>
-                    <Text
-                      style={styles.textoLabel}>
-                      Autor:
-                    </Text>
+                  <Text
+                    style={styles.textoBotao}>
+                    Galeria
+                  </Text>
 
-                    <TextInput
-                      ref='autor'
-                      style={styles.inputStyle}
-                      value={this.state.autor}
-                      onChangeText={(autor) => this.setState({autor})}
-                      returnKeyType='next'
-                      blurOnSubmit={false}
-                      onSubmitEditing={() => this._focusNextField('loja')}
-                    />
-                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity
+              style={styles.btCancelar}
+              onPress={() => {
+                this.setModalVisible(!this.state.modalVisible);
+              }}>
+
+              <Text>CANCELA</Text>
+
+            </TouchableOpacity>
+          </View>
+        </Modal>
+
+        <View style={styles.card}>
+
+          <View
+            style={[styles.infoTextoContainer, styles.horizontal]}>
+
+            <View style={styles.containerCampos}>
+
+              <View
+                style={styles.campoContainer}>
+
+                <MaterialIcons
+                  name={'book'}
+                  size={30}
+                  color={'#4b4b4b'}/>
+
+                <View
+                  style={styles.textoContainer}>
+
+                  <Text
+                    style={styles.textoLabel}>
+                    Título:
+                  </Text>
+
+                  <TextInput
+                    ref='titulo'
+                    style={styles.inputStyle}
+                    value={this.state.titulo}
+                    error={"Insira um valor para o título"}
+                    onChangeText={(titulo) => this.setState({titulo})}
+                    returnKeyType='next'
+                    blurOnSubmit={false}
+                    onSubmitEditing={() => this._focusNextField('autor')}/>
                 </View>
               </View>
 
-              <Image
-                onPress={this._takePhoto}
-                style={styles.capa}
-                source={this.state.capa !== "" ? this.state.capa : require('../img/capa_add.jpg')}/>
-
-            </View>
-
-            <View style={[styles.horizontal, styles.containerDataLoja]}>
               <View
-                style={[styles.campoContainer, styles.fill]}>
+                style={styles.campoContainer}>
+                <MaterialIcons
+                  name={'person'}
+                  size={30}
+                  color={'#4b4b4b'}/>
+
+                <View style={styles.textoContainer}>
+                  <Text
+                    style={styles.textoLabel}>
+                    Autor:
+                  </Text>
+
+                  <TextInput
+                    ref='autor'
+                    style={styles.inputStyle}
+                    value={this.state.autor}
+                    onChangeText={(autor) => this.setState({autor})}
+                    returnKeyType='next'
+                    blurOnSubmit={false}
+                    onSubmitEditing={() => this._focusNextField('loja')}/>
+
+                </View>
+              </View>
+
+              <View
+                style={styles.campoContainer}>
 
                 <MaterialIcons
                   name={'store'}
@@ -212,7 +282,7 @@ export default class AdicionarLivroScreen extends React.Component {
                 </View>
               </View>
 
-              <TouchableOpacity style={[styles.campoContainer, styles.fill]} onPress={this._showDateTimePicker}>
+              <TouchableOpacity style={styles.campoContainer} onPress={this._showDateTimePicker}>
                 <MaterialIcons
                   name={'today'}
                   size={30}
@@ -246,8 +316,53 @@ export default class AdicionarLivroScreen extends React.Component {
 
             </View>
 
-          </View>
+            <View style={styles.containerBotoesUpload}>
 
+              <TouchableOpacity
+                style={styles.capaContainer}
+                onPress={() => this.setModalVisible(!this.state.modalVisible)}>
+
+                <Image
+                  style={styles.capa}
+                  source={this.state.capa !== "" ? {uri: imageUri} : null}/>
+
+                {this.state.capa === "" &&
+                <View>
+                  <FontAwesome
+                    name={'book'}
+                    size={30}
+                    color={'#4b4b4b'}/>
+
+                  <Text
+                    style={styles.textoImagem}>
+                    CAPA
+                  </Text>
+                </View>
+                }
+
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.pdfContainer}
+                onPress={this._pickDocument}>
+
+                <View>
+                  <MaterialIcons
+                    name={this.state.pdf === "" ? 'insert-drive-file' : 'check-circle'}
+                    size={30}
+                    color={this.state.pdf === "" ? '#4b4b4b' : '#00897B'}/>
+
+
+                  <Text
+                    style={this.state.pdf === "" ? styles.textoImagem : styles.textoPdfEnviado}>
+                    PDF
+                  </Text>
+
+                </View>
+              </TouchableOpacity>
+            </View>
+
+          </View>
           <View
             style={styles.botaoContainer}>
 
@@ -259,15 +374,20 @@ export default class AdicionarLivroScreen extends React.Component {
           </View>
         </View>
       </View>
+
     );
   }
+
 }
 
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#00897B',
-    padding: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 10,
+    paddingTop: 5,
     flex: 1,
   },
 
@@ -279,17 +399,23 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 3,
     backgroundColor: '#fff',
-    margin: 5,
+    marginLeft: 5,
+    marginRight: 5,
+    marginBottom: 5,
     shadowColor: '#000000',
     shadowOffset: {width: 2, height: 2},
     shadowOpacity: 0.3,
     shadowRadius: 1,
     elevation: 1,
+    paddingTop: 10,
   },
+
   containerDataLoja: {
     marginTop: 0,
+    flex: 1,
   },
-  containerTituloAutor: {
+
+  containerCampos: {
     flex: 3,
   },
 
@@ -297,19 +423,62 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
 
-
-  capa: {
+  containerBotoesUpload: {
     flex: 1,
+  },
+
+  capaContainer: {
     height: 100,
+    flex: 4,
+    flexDirection: 'row',
     marginTop: 10,
     marginLeft: 5,
     marginRight: 10,
+    alignItems: 'center',
+    // alignSelf: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#e7e8eb',
+    borderRadius: 5,
+  },
+
+  pdfContainer: {
+    flex: 2,
+    flexDirection: 'row',
+    marginTop: 20,
+    marginLeft: 5,
+    marginRight: 10,
+    alignItems: 'center',
+    // alignSelf: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#e7e8eb',
+    borderRadius: 5,
+    marginBottom: 15,
+  },
+
+
+  capa: {
+    height: 150,
+    flex: 1,
   },
 
   textoLabel: {
     fontSize: 12,
     paddingLeft: 2,
     color: '#4b4b4b',
+  },
+
+  textoImagem: {
+    fontSize: 10,
+    color: '#696969',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+
+  textoPdfEnviado: {
+    fontSize: 10,
+    color: '#00897B',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 
   textoContainer: {
@@ -327,10 +496,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 5,
   },
+
   fill: {
     flex: 1,
   },
-
 
   inputStyle: {
     paddingBottom: 6,
@@ -341,6 +510,40 @@ const styles = StyleSheet.create({
 
   botaoContainer: {
     padding: 20,
+  },
+
+  dialogFoto: {
+    margin: 50,
+  },
+
+  bottomModal: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+
+  opcoesImagem: {
+    flexDirection: 'row',
+    margin: 15,
+  },
+
+
+  btCancelar: {
+    padding: 10,
+    justifyContent: 'center'
+  },
+
+  textoBotao: {
+    fontSize: 14,
+    textAlign: 'center',
+    color: '#696969',
   },
 
 });

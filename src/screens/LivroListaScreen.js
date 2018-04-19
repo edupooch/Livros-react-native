@@ -4,6 +4,7 @@ import {livros} from "../modelo/livros"
 import LivroItem from "../components/livroItem";
 
 export default class LivroListaScreen extends React.Component {
+
   static navigationOptions = {
     title: 'Livros',
     headerStyle: {
@@ -55,8 +56,7 @@ export default class LivroListaScreen extends React.Component {
             style={styles.campoAdicionar}
             underlineColorAndroid={'#ccc'}
             placeholder="Adicionar novo livro"
-            onSubmitEditing={this.cliqueAdd}
-          />
+            onSubmitEditing={this.cliqueAdd}/>
 
           <TouchableOpacity
             onPress={this.cliqueAdd}
@@ -74,8 +74,7 @@ export default class LivroListaScreen extends React.Component {
               item={obj.item}
               cliqueLivro={() => this.cliqueLivro(obj.item)}/>}
           data={this.state.livros}
-          keyExtractor={(item, index) => index.toString()}
-        />
+          keyExtractor={(item, index) => (index.toString())}/>
       </View>
     );
   }
@@ -84,6 +83,7 @@ export default class LivroListaScreen extends React.Component {
     await AsyncStorage.clear();
     this.props.navigation.navigate('Auth');
   };
+
 }
 
 const styles = StyleSheet.create({

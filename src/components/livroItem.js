@@ -3,13 +3,14 @@ import {Text, StyleSheet, View, TouchableOpacity, Image} from 'react-native';
 
 
 const LivroItem = props => {
+  let capaUri = props.item.capa;
   return (
     <View
       style={styles.card}>
 
       <Image
-        style={styles.capa}
-        source={props.item.capa !== "" ? props.item.capa : require('../img/default.png')}/>
+        style={styles.capaContainer}
+        source={props.item.capa !== "" ? {uri: capaUri} : require('../img/default.png')}/>
 
       <View
         style={styles.containerInfoCards}>
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
     height: 90
   },
 
-  capa: {
+  capaContainer: {
     backgroundColor: '#00897B',
     height: 90,
     borderTopLeftRadius: 3,

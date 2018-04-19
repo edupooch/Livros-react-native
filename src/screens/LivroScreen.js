@@ -1,9 +1,11 @@
 import React from "react";
 import {Image, ImageBackground, StyleSheet, Text, View} from "react-native";
+import MenuLivro from "../components/navigationMenu";
 
 export default class LivroScreen extends React.Component {
   static navigationOptions = {
     title: 'Livro',
+    // headerTitle: <MenuLivro/>,
     headerStyle: {
       backgroundColor: '#00897B',
     },
@@ -16,20 +18,20 @@ export default class LivroScreen extends React.Component {
   render() {
     const {params} = this.props.navigation.state;
     const livro = params ? params.livro : null;
-
+    let uriCapa = livro.capa
     return (
       <View
         style={styles.container}>
 
         <ImageBackground
-          source={livro.capa !== "" ? livro.capa : null}
+          source={livro.capa !== "" ? {uri: uriCapa} : null}
           style={styles.card}>
 
           <View style={styles.infoContainer}>
 
             <Image
-              source={livro.capa !== "" ? livro.capa : null}
-              style={styles.capa}/>
+              source={livro.capa !== "" ? {uri: uriCapa} : null}
+              style={styles.capaContainer}/>
 
             <View
               style={styles.infoTextoContainer}>
@@ -126,7 +128,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  capa: {
+  capaContainer: {
     flex: 1,
     height: 160,
     marginTop: 10,
