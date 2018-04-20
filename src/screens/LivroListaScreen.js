@@ -25,7 +25,11 @@ export default class LivroListaScreen extends React.Component {
   }
 
   cliqueLivro = (item) => {
-    this.props.navigation.navigate('DetalhesLivro', {livro: item});
+    this.props.navigation.navigate('DetalhesLivro',
+      {
+        livro: item,
+        deletaItem: this.deletarLivro
+      });
   };
 
   cliqueAdd = () => {
@@ -42,6 +46,14 @@ export default class LivroListaScreen extends React.Component {
       {
         input: '',
         livros: [...prevState.livros, (livro)]
+      }))
+  };
+
+  deletarLivro = (livro) => {
+    console.log(livro);
+    this.setState(prevState => (
+      {
+        livros: prevState.livros.splice(prevState.livros.indexOf(livro), 1)
       }))
   };
 
@@ -72,7 +84,8 @@ export default class LivroListaScreen extends React.Component {
           renderItem={obj =>
             <LivroItem
               item={obj.item}
-              cliqueLivro={() => this.cliqueLivro(obj.item)}/>}
+              cliqueLivro={() => this.cliqueLivro(obj.item)}
+            />}
           data={this.state.livros}
           keyExtractor={(item, index) => (index.toString())}/>
       </View>

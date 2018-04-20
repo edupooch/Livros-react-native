@@ -105,8 +105,8 @@ export default class AdicionarLivroScreen extends React.Component {
 
   _pickDocument = async () => {
     let pickerResult = await DocumentPicker.getDocumentAsync({type: 'application/pdf'});
-    console.log(pickerResult.uri);
-    // if (pickerResult.uri !== undefined)
+    console.log(pickerResult);
+    if (pickerResult.uri !== undefined)
     this.setState({pdf: pickerResult.uri});
   };
 

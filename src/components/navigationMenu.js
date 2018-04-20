@@ -1,33 +1,63 @@
 import React from "react";
 import {MaterialIcons} from "@expo/vector-icons";
-import {StyleSheet, View} from "react-native";
-import Text from "react-native-elements/src/text/Text";
+import {StyleSheet, TouchableOpacity, View} from "react-native";
 
-export default class MenuLivro extends React.Component {
-  render() {
-    return (
+const MenuItem = props => {
 
-      <View style={styles.containerBarra}>
-        <Text style={styles.textoTitulo}>Livros</Text>
+  return (
+    <View style={styles.containerBarra}>
+      <View>
+        <TouchableOpacity
+          onPress={props.deletaItem}
+          style={styles.icone}>
 
-        <MaterialIcons
-          name={'camera-alt'}
-          size={30}
-          color={'#fff'}/>
+          <MaterialIcons
+            name={'delete'}
+            size={25}
+            color={'#fff'}/>
+
+        </TouchableOpacity>
       </View>
-    );
-  }
-}
+
+      <View>
+        <TouchableOpacity
+          onPress={props.deletaItem}
+          style={styles.icone}>
+
+          <MaterialIcons
+            name={'edit'}
+            size={25}
+            color={'#fff'}/>
+
+        </TouchableOpacity>
+
+      </View>
+    </View>
+  )
+};
 
 const styles = StyleSheet.create({
+
   containerBarra: {
     flexDirection: 'row',
     flex: 1,
-    alignItems:'center',
-    justifyContent: 'space-between'
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingRight: 10
   },
+
   textoTitulo: {
     color: '#fff',
     fontWeight: 'bold',
   },
+
+  icone: {
+    flex: 1,
+    paddingRight: 10,
+    paddingLeft: 10,
+    justifyContent: 'center',
+  },
+
 });
+
+export default MenuItem
