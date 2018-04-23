@@ -20,8 +20,9 @@ const MenuItem = props => {
       </View>
 
       <View>
+
         <TouchableOpacity
-          onPress={props.deletaItem}
+          onPress={props.editaItem}
           style={styles.icone}>
 
           <MaterialIcons

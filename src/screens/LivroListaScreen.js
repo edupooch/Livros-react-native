@@ -24,11 +24,13 @@ export default class LivroListaScreen extends React.Component {
     };
   }
 
-  cliqueLivro = (item) => {
+  cliqueLivro = (obj) => {
     this.props.navigation.navigate('DetalhesLivro',
       {
-        livro: item,
-        deletaItem: this.deletarLivro
+        livro: obj.item,
+        index: obj.index,
+        deletaItem: this.deletarLivro,
+        editaItem: this.editarLivro,
       });
   };
 
@@ -36,7 +38,7 @@ export default class LivroListaScreen extends React.Component {
     this.props.navigation.navigate('AdicionarLivro',
       {
         titulo: this.state.input,
-        onSubmit: this.adicionarLivro
+        adicionarNovo: this.adicionarLivro
       }
     );
   };
@@ -50,11 +52,17 @@ export default class LivroListaScreen extends React.Component {
   };
 
   deletarLivro = (livro) => {
-    console.log(livro);
-    this.setState(prevState => (
-      {
-        livros: prevState.livros.splice(prevState.livros.indexOf(livro), 1)
-      }))
+    this.setState(prevState => {
+      prevState.livros.splice(livro, 1);
+      return ({livros: prevState.livros})
+    })
+  };
+
+  editarLivro = (livro, index) => {
+    this.setState(prevState => {
+      prevState.livros[index] = livro;
+      return ({livros: prevState.livros})
+    })
   };
 
   render() {
@@ -84,9 +92,10 @@ export default class LivroListaScreen extends React.Component {
           renderItem={obj =>
             <LivroItem
               item={obj.item}
-              cliqueLivro={() => this.cliqueLivro(obj.item)}
+              cliqueLivro={() => this.cliqueLivro(obj)}
             />}
           data={this.state.livros}
+          extraData={this.state}
           keyExtractor={(item, index) => (index.toString())}/>
       </View>
     );

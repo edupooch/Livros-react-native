@@ -5,10 +5,9 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import {ImagePicker, DocumentPicker} from 'expo';
 import Modal from 'react-native-modal';
 
-export default class AdicionarLivroScreen extends React.Component {
+export default class FormularioLivroScreen extends React.Component {
 
   static navigationOptions = {
-    title: 'Adicionar Livro',
     headerStyle: {
       backgroundColor: '#00897B',
       elevation: 0,
@@ -23,21 +22,44 @@ export default class AdicionarLivroScreen extends React.Component {
     super(props);
     // pega parâmetros passados pela outra tela
     const {params} = this.props.navigation.state;
-    const inputLista = params ? params.titulo : null;
-    const adicionarLivro = params ? params.onSubmit : null;
+    const inputLista = params ? params.titulo : "";
+    const adicionar = params ? params.adicionarNovo : null;
+    const editar = params ? params.editarLivro : null;
+    const atualizaView = params ? params.atualizaView : null;
+    const livro = params ? params.livro : null;
+    const idLivro = params ? params.index : null;
 
     // inicia o state
-    this.state = {
-      titulo: inputLista,
-      autor: "",
-      data: "",
-      capa: "",
-      pdf: "",
-      loja: "",
-      adicionarLivro: adicionarLivro,
-      isDateTimePickerVisible: false,
-      modalVisible: false,
-    };
+    if (livro === undefined) {
+      // entrou na tela para adicionar livro
+      this.state = {
+        adicionarLivro: adicionar,
+        titulo: inputLista,
+        autor: "",
+        data: "",
+        capa: "",
+        pdf: "",
+        loja: "",
+        isDateTimePickerVisible: false,
+        modalVisible: false,
+      };
+    } else {
+      // entrou na tela para editar o livro
+      this.state = {
+        editarLivro: editar,
+        atualizaView: atualizaView,
+        index: idLivro,
+        titulo: livro.titulo,
+        autor: livro.autor,
+        data: livro.data,
+        capa: livro.capa,
+        pdf: livro.pdf,
+        loja: livro.loja,
+        isDateTimePickerVisible: false,
+        modalVisible: false,
+      };
+    }
+
   }
 
   salvarSala = () => {
@@ -49,10 +71,19 @@ export default class AdicionarLivroScreen extends React.Component {
       pdf: this.state.pdf,
       loja: this.state.loja
     };
-    let adicionarLivro = this.state.adicionarLivro;
-    adicionarLivro(livro);
 
-    this.props.navigation.goBack()
+    if (!this.state.adicionarLivro) {
+      let editarLivro = this.state.editarLivro;
+      editarLivro(livro, this.state.index);
+
+      let atualizaView = this.state.atualizaView;
+      atualizaView(livro);
+      this.props.navigation.goBack();
+    } else {
+      let adicionarLivro = this.state.adicionarLivro;
+      adicionarLivro(livro);
+      this.props.navigation.goBack();
+    }
   };
 
   componentDidMount = () => {
@@ -107,7 +138,7 @@ export default class AdicionarLivroScreen extends React.Component {
     let pickerResult = await DocumentPicker.getDocumentAsync({type: 'application/pdf'});
     console.log(pickerResult);
     if (pickerResult.uri !== undefined)
-    this.setState({pdf: pickerResult.uri});
+      this.setState({pdf: pickerResult.uri});
   };
 
   formatDate = (date) => {
@@ -369,7 +400,7 @@ export default class AdicionarLivroScreen extends React.Component {
             <Button
               onPress={this.salvarSala}
               color={"#00897B"}
-              title={"Adicionar"}/>
+              title={this.state.adicionarLivro ? "Adicionar" : "Editar"}/>
 
           </View>
         </View>

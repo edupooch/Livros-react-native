@@ -12,17 +12,38 @@ import {
 import {MaterialIcons} from "@expo/vector-icons";
 import MenuLivro from "../components/navigationMenu";
 
+let navigation;
+let livro;
+let idLivro;
+
+let deletarItem;
+let editarItem;
+let atualizaView;
+
 export default class LivroScreen extends React.Component {
+
   static navigationOptions = {
     title: 'Livro',
-    headerTitle: <MenuLivro
-      deletaItem= {() => {
-        console.log('aaa');
-        const {params} = this.props.navigation.state;
-        const deletaItem = params ? params.deletaItem : null;
-        deletaItem()
-      }
-      }/>,
+
+    headerTitle:
+      <MenuLivro
+        deletaItem={() => {
+          deletarItem(idLivro);
+          navigation.goBack();
+        }}
+
+        editaItem={() => {
+          navigation.navigate('EditarLivro',
+            {
+              editarLivro: editarItem,
+              livro: livro,
+              index: idLivro,
+              atualizaView: atualizaView,
+            }
+          );
+        }}
+      />
+    ,
     headerStyle: {
       backgroundColor: '#00897B',
     },
@@ -32,10 +53,29 @@ export default class LivroScreen extends React.Component {
     },
   };
 
+  constructor(props) {
+    super(props);
+    navigation = this.props.navigation;
+    const {params} = navigation.state;
+    livro = params ? params.livro : null;
+    idLivro = params ? params.index : null;
+    deletarItem = params ? params.deletaItem : null;
+    editarItem = params ? params.editaItem : null;
+
+    atualizaView = (livroEditado) => {
+      livro = livroEditado;
+      this.setState({livro: livroEditado})
+    };
+
+    this.state = {
+      livro: livro,
+    }
+  }
+
+
   render() {
-    const {params} = this.props.navigation.state;
-    const livro = params ? params.livro : null;
-    const uriCapa = livro.capa;
+    const uriCapa = this.state.livro.capa;
+
     return (
       <View
         style={styles.container}>
@@ -43,13 +83,13 @@ export default class LivroScreen extends React.Component {
         <View style={styles.card}>
 
           <ImageBackground
-            source={livro.capa !== "" ? {uri: uriCapa} : null}
+            source={this.state.livro.capa !== "" ? {uri: uriCapa} : null}
             blurRadius={1.5}
             style={styles.barraCapa}>
 
             <View style={styles.capaContainer}>
               <Image
-                source={livro.capa !== "" ? {uri: uriCapa} : null}
+                source={this.state.livro.capa !== "" ? {uri: uriCapa} : null}
                 style={styles.capa}/>
             </View>
 
@@ -77,7 +117,7 @@ export default class LivroScreen extends React.Component {
 
                   <Text
                     style={styles.textoValor}>
-                    {livro.titulo}
+                    {this.state.livro.titulo}
                   </Text>
 
                 </View>
@@ -100,7 +140,7 @@ export default class LivroScreen extends React.Component {
 
                   <Text
                     style={styles.textoValor}>
-                    {livro.autor}
+                    {this.state.livro.autor}
                   </Text>
                 </View>
               </View>
@@ -121,7 +161,7 @@ export default class LivroScreen extends React.Component {
 
                   <Text
                     style={styles.textoValor}>
-                    {livro.data}
+                    {this.state.livro.data}
                   </Text>
                 </View>
               </View>
@@ -144,18 +184,18 @@ export default class LivroScreen extends React.Component {
 
                   <Text
                     style={styles.textoValor}>
-                    {livro.loja}
+                    {this.state.livro.loja}
                   </Text>
 
                 </View>
               </View>
 
-              {livro.pdf !== "" &&
+              {this.state.livro.pdf !== "" &&
               <View style={styles.botaoContainer}>
                 <Button
                   title={"Ver PDF"}
                   color={"#00897B"}
-                  onPress={() => Linking.openURL(livro.pdf)}/>
+                  onPress={() => Linking.openURL(this.state.livro.pdf)}/>
               </View>
               }
 
@@ -165,15 +205,7 @@ export default class LivroScreen extends React.Component {
       </View>
     )
   }
-
 }
-
-export const deletaItem = () => {
-  console.log('aaa');
-  const {params} = this.props.navigation.state;
-  const deletaItem = params ? params.deletaItem : null;
-  deletaItem()
-};
 
 const styles = StyleSheet.create({
   card: {

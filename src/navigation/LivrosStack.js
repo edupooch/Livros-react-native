@@ -2,9 +2,10 @@ import React from "react";
 import {StackNavigator} from 'react-navigation';
 import LivroListaScreen from "../screens/LivroListaScreen";
 import LivroScreen from "../screens/LivroScreen";
-import AdicionarLivroScreen from "../screens/AdicionarLivroScreen";
+import FormularioLivroScreen from "../screens/FormularioLivroScreen";
 
 export default StackNavigator({
+
     Home: {
       screen: LivroListaScreen,
     },
@@ -14,7 +15,13 @@ export default StackNavigator({
     },
 
     AdicionarLivro: {
-      screen: AdicionarLivroScreen,
+      screen: FormularioLivroScreen,
+      navigationOptions: {title: "Adicionar Livro"}
+    },
+
+    EditarLivro: {
+      screen: FormularioLivroScreen,
+      navigationOptions: {title: "Editar Livro"}
     },
 
   },
