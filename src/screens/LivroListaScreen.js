@@ -2,6 +2,7 @@ import React from "react";
 import {AsyncStorage, Text, FlatList, StyleSheet, TextInput, TouchableOpacity, View} from "react-native";
 import {livros} from "../modelo/livros"
 import LivroItem from "../components/livroItem";
+import * as firebase from 'firebase';
 
 export default class LivroListaScreen extends React.Component {
 
@@ -18,11 +19,43 @@ export default class LivroListaScreen extends React.Component {
 
   constructor(props) {
     super(props);
+    this.iniciaFirebase();
     this.state = {
-      livros: livros,
+      livros: [],
       input: '',
     };
+    this.carregaLivros(this);
   }
+
+  iniciaFirebase = () => {
+    // Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyC1vD3B8VDTU33pau6XtbtoSxG1Nr8TXAQ",
+      authDomain: "testappionic-93bec.firebaseapp.com",
+      databaseURL: "https://testappionic-93bec.firebaseio.com",
+      projectId: "testappionic-93bec",
+      storageBucket: "testappionic-93bec.appspot.com",
+      messagingSenderId: "335082067236"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+  };
+
+  carregaLivros = (context) => {
+    let livrosRef = firebase.database().ref('livro');
+    livrosRef.on('value', function (snapshot) {
+      // let keys = Object.keys(snapshot.val());
+      // let livros = keys.map(key => {
+      //   let livro = snapshot.val()[key];
+      //   livro.key = key;
+      //   return livro;
+      // });
+      let livros = snapshot.val();
+      console.log(Object.keys(livros));
+      context.setState({livros: livros});
+
+    });
+  };
 
   cliqueLivro = (obj) => {
     this.props.navigation.navigate('DetalhesLivro',
@@ -44,6 +77,8 @@ export default class LivroListaScreen extends React.Component {
   };
 
   adicionarLivro = (livro) => {
+
+
     this.setState(prevState => (
       {
         input: '',
@@ -81,6 +116,7 @@ export default class LivroListaScreen extends React.Component {
           <TouchableOpacity
             onPress={this.cliqueAdd}
             style={styles.botaoAdd}>
+
             <Text
               style={styles.textoBotao}>
               ADD
@@ -94,9 +130,16 @@ export default class LivroListaScreen extends React.Component {
               item={obj.item}
               cliqueLivro={() => this.cliqueLivro(obj)}
             />}
-          data={this.state.livros}
+
+          data={Object.keys(this.state.livros)
+            .map(key => {
+              let livro = this.state.livros[key];
+              livro.key = key;
+              return livro;
+            })}
+
           extraData={this.state}
-          keyExtractor={(item, index) => (index.toString())}/>
+          keyExtractor={(item, index) => (item.key)}/>
       </View>
     );
   }

@@ -1,11 +1,15 @@
 import React from "react";
 import {MaterialIcons} from "@expo/vector-icons";
-import {StyleSheet, TouchableOpacity, View} from "react-native";
+import {StyleSheet, Platform, Text, TouchableOpacity, View} from "react-native";
 
-const MenuItem = props => {
+const MenuBarLivro = props => {
 
   return (
+
     <View style={styles.containerBarra}>
+
+      <Text style={Platform.OS === 'ios' ? styles.textoTituloIos : styles.textoTituloAndroid}>Livro</Text>
+
       <View>
         <TouchableOpacity
           onPress={props.deletaItem}
@@ -47,9 +51,19 @@ const styles = StyleSheet.create({
     paddingRight: 10
   },
 
-  textoTitulo: {
+  textoTituloIos: {
     color: '#fff',
     fontWeight: 'bold',
+    textAlign: 'center',
+    paddingLeft: 30,
+  },
+
+  textoTituloAndroid: {
+    color: '#fff',
+    fontWeight: 'bold',
+    flex: 1,
+    fontSize: 20,
+
   },
 
   icone: {
@@ -61,4 +75,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default MenuItem
+export default MenuBarLivro

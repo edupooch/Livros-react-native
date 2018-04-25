@@ -136,7 +136,6 @@ export default class FormularioLivroScreen extends React.Component {
 
   _pickDocument = async () => {
     let pickerResult = await DocumentPicker.getDocumentAsync({type: 'application/pdf'});
-    console.log(pickerResult);
     if (pickerResult.uri !== undefined)
       this.setState({pdf: pickerResult.uri});
   };

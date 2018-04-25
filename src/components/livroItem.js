@@ -18,7 +18,7 @@ const LivroItem = props => {
         <View
           style={styles.containerTitulo}>
           <Text
-            style={styles.textoTitulo}>
+            style={styles.textoTituloAndroid}>
             {props.item.titulo}
           </Text>
 
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 
-  textoTitulo: {
+  textoTituloAndroid: {
     fontSize: 17,
     color: '#4b4b4b',
   },

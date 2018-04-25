@@ -10,7 +10,7 @@ import {
   View
 } from "react-native";
 import {MaterialIcons} from "@expo/vector-icons";
-import MenuLivro from "../components/navigationMenu";
+import MenuLivro from "../components/menuBarLivro";
 
 let navigation;
 let livro;
@@ -26,6 +26,7 @@ export default class LivroScreen extends React.Component {
     title: 'Livro',
 
     headerTitle:
+
       <MenuLivro
         deletaItem={() => {
           deletarItem(idLivro);
@@ -161,7 +162,7 @@ export default class LivroScreen extends React.Component {
 
                   <Text
                     style={styles.textoValor}>
-                    {this.state.livro.data}
+                    {this.state.livro.dtLancamento}
                   </Text>
                 </View>
               </View>
