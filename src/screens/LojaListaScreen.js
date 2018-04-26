@@ -1,7 +1,6 @@
 import React from "react";
 import {AsyncStorage, StyleSheet, View} from "react-native";
 import {livros} from "../modelo/livros"
-import LivroLista from "../components/livroLista"
 
 export default class LojaListaScreen extends React.Component {
     static navigationOptions = {

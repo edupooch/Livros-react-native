@@ -36,7 +36,7 @@ export default class FormularioLivroScreen extends React.Component {
         adicionarLivro: adicionar,
         titulo: inputLista,
         autor: "",
-        data: "",
+        dtLancamento: "",
         capa: "",
         pdf: "",
         loja: "",
@@ -51,7 +51,7 @@ export default class FormularioLivroScreen extends React.Component {
         index: idLivro,
         titulo: livro.titulo,
         autor: livro.autor,
-        data: livro.data,
+        dtLancamento: livro.dtLancamento,
         capa: livro.capa,
         pdf: livro.pdf,
         loja: livro.loja,
@@ -66,7 +66,7 @@ export default class FormularioLivroScreen extends React.Component {
     let livro = {
       titulo: this.state.titulo,
       autor: this.state.autor,
-      data: this.state.data,
+      dtLancamento: this.state.dtLancamento,
       capa: this.state.capa,
       pdf: this.state.pdf,
       loja: this.state.loja
@@ -102,8 +102,8 @@ export default class FormularioLivroScreen extends React.Component {
   _hideDateTimePicker = () => this.setState({isDatePickerVisible: false});
 
   _handleDatePicked = (date) => {
-    let data = this.formatDate(date);
-    this.setState({data: data});
+    let dtLancamento = this.formatDate(date);
+    this.setState({dtLancamento: dtLancamento});
 
     this._hideDateTimePicker();
   };
@@ -306,7 +306,7 @@ export default class FormularioLivroScreen extends React.Component {
                     onChangeText={(loja) => this.setState({loja})}
                     returnKeyType='next'
                     blurOnSubmit={false}
-                    onSubmitEditing={() => this._focusNextField('data')}
+                    onSubmitEditing={() => this._focusNextField('dtLancamento')}
                   />
 
                 </View>
@@ -325,10 +325,10 @@ export default class FormularioLivroScreen extends React.Component {
                   </Text>
 
                   <TextInput
-                    ref={'data'}
+                    ref={'dtLancamento'}
                     style={styles.inputStyle}
-                    value={this.state.data}
-                    onChangeText={(data) => this.setState({data})}
+                    value={this.state.dtLancamento}
+                    onChangeText={(dtLancamento) => this.setState({dtLancamento})}
                     returnKeyType={'next'}
                     blurOnSubmit={false}
                     editable={false}

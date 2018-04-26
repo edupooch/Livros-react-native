@@ -59,7 +59,7 @@ export default class LivroScreen extends React.Component {
     navigation = this.props.navigation;
     const {params} = navigation.state;
     livro = params ? params.livro : null;
-    idLivro = params ? params.index : null;
+    idLivro = livro.key;
     deletarItem = params ? params.deletaItem : null;
     editarItem = params ? params.editaItem : null;
 

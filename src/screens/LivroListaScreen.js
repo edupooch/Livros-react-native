@@ -3,6 +3,19 @@ import {AsyncStorage, Text, FlatList, StyleSheet, TextInput, TouchableOpacity, V
 import {livros} from "../modelo/livros"
 import LivroItem from "../components/livroItem";
 import * as firebase from 'firebase';
+import uuid from 'uuid';
+
+//essa parte do código serve para ignorar o warning de timeout do firebsae durante o debug
+import {YellowBox} from 'react-native';
+import _ from 'lodash';
+
+YellowBox.ignoreWarnings(['Setting a timer']);
+const _console = _.clone(console);
+console.warn = message => {
+  if (message.indexOf('Setting a timer') <= -1) {
+    _console.warn(message);
+  }
+};
 
 export default class LivroListaScreen extends React.Component {
 
@@ -42,7 +55,7 @@ export default class LivroListaScreen extends React.Component {
   };
 
   carregaLivros = (context) => {
-    let livrosRef = firebase.database().ref('livro');
+    let livrosRef = firebase.database().ref('livros');
     livrosRef.on('value', function (snapshot) {
       // let keys = Object.keys(snapshot.val());
       // let livros = keys.map(key => {
@@ -51,7 +64,6 @@ export default class LivroListaScreen extends React.Component {
       //   return livro;
       // });
       let livros = snapshot.val();
-      console.log(Object.keys(livros));
       context.setState({livros: livros});
 
     });
@@ -77,28 +89,43 @@ export default class LivroListaScreen extends React.Component {
   };
 
   adicionarLivro = (livro) => {
+    const keyNovoLivro = firebase.database().ref().child('livros').push().key;
+    let updates = {};
+    updates['/livros/' + keyNovoLivro] = livro;
+    firebase.database().ref().update(updates);
+    // limpa o campo de adicionar livro na tela de lista
+    this.setState({input: ''})
 
+    // this.upload(livro.capa)
 
-    this.setState(prevState => (
-      {
-        input: '',
-        livros: [...prevState.livros, (livro)]
-      }))
   };
 
-  deletarLivro = (livro) => {
-    this.setState(prevState => {
-      prevState.livros.splice(livro, 1);
-      return ({livros: prevState.livros})
-    })
+
+  upload = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const ref = firebase
+      .storage()
+      .ref()
+      .child(uuid.v4());
+
+    const snapshot = await ref.put(blob);
+    return snapshot.downloadURL;
   };
 
-  editarLivro = (livro, index) => {
-    this.setState(prevState => {
-      prevState.livros[index] = livro;
-      return ({livros: prevState.livros})
-    })
+
+  deletarLivro = (key) => {
+    let updates = {};
+    updates['/livros/' + key] = null;
+    firebase.database().ref().update(updates);
   };
+
+  editarLivro = (livro, key) => {
+    let updates = {};
+    updates['/livros/' + key] = livro;
+    firebase.database().ref().update(updates);
+  };
+
 
   render() {
     return (
@@ -139,7 +166,7 @@ export default class LivroListaScreen extends React.Component {
             })}
 
           extraData={this.state}
-          keyExtractor={(item, index) => (item.key)}/>
+          keyExtractor={(item) => (item.key)}/>
       </View>
     );
   }
@@ -150,6 +177,7 @@ export default class LivroListaScreen extends React.Component {
   };
 
 }
+
 
 const styles = StyleSheet.create({
   container: {

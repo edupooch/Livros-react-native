@@ -7,7 +7,6 @@ const LivroItem = props => {
   return (
     <View
       style={styles.card}>
-
       <Image
         style={styles.capaContainer}
         source={props.item.capa !== "" ? {uri: capaUri} : require('../img/default.png')}/>
