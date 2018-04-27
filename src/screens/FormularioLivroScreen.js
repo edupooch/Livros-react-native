@@ -29,6 +29,7 @@ export default class FormularioLivroScreen extends React.Component {
     const livro = params ? params.livro : null;
     const idLivro = params ? params.index : null;
 
+
     // inicia o state
     if (livro === undefined) {
       // entrou na tela para adicionar livro
@@ -45,6 +46,9 @@ export default class FormularioLivroScreen extends React.Component {
       };
     } else {
       // entrou na tela para editar o livro
+      //Linha para declarar loja vazia, tava dando problema pq o app ionic nao tem loja
+      if (!livro.loja) livro.loja = "";
+
       this.state = {
         editarLivro: editar,
         atualizaView: atualizaView,
@@ -117,8 +121,9 @@ export default class FormularioLivroScreen extends React.Component {
       // allowsEditing: true,
       // aspect: [4, 3],
       // base64: true,
-      quality: 0.7, //qualidade da compressão
+      quality: 0.5, //qualidade da compressão
     });
+
     if (pickerResult.uri !== undefined)
       this.setState({capa: pickerResult.uri});
   };
@@ -192,6 +197,7 @@ export default class FormularioLivroScreen extends React.Component {
                     Câmera
                   </Text>
                 </View>
+
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -352,22 +358,23 @@ export default class FormularioLivroScreen extends React.Component {
                 style={styles.capaContainer}
                 onPress={() => this.setModalVisible(!this.state.modalVisible)}>
 
-                <Image
-                  style={styles.capa}
-                  source={this.state.capa !== "" ? {uri: imageUri} : null}/>
+                {this.state.capa ?
+                  <Image
+                    style={styles.capa}
+                    resizeMode="contain"
+                    source={this.state.capa !== "" ? {uri: imageUri} : null}/>
+                  :
+                  <View>
+                    <FontAwesome
+                      name={'book'}
+                      size={30}
+                      color={'#4b4b4b'}/>
 
-                {this.state.capa === "" &&
-                <View>
-                  <FontAwesome
-                    name={'book'}
-                    size={30}
-                    color={'#4b4b4b'}/>
-
-                  <Text
-                    style={styles.textoImagem}>
-                    CAPA
-                  </Text>
-                </View>
+                    <Text
+                      style={styles.textoImagem}>
+                      CAPA
+                    </Text>
+                  </View>
                 }
 
               </TouchableOpacity>
@@ -487,8 +494,9 @@ const styles = StyleSheet.create({
 
 
   capa: {
-    height: 150,
     flex: 1,
+    height: 200,
+    borderRadius: 5,
   },
 
   textoLabel: {

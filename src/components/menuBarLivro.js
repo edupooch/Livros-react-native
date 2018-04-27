@@ -5,9 +5,7 @@ import {StyleSheet, Platform, Text, TouchableOpacity, View} from "react-native";
 const MenuBarLivro = props => {
 
   return (
-
     <View style={styles.containerBarra}>
-
       <Text style={Platform.OS === 'ios' ? styles.textoTituloIos : styles.textoTituloAndroid}>Livro</Text>
 
       <View>
@@ -23,8 +21,8 @@ const MenuBarLivro = props => {
         </TouchableOpacity>
       </View>
 
-      <View>
 
+      <View>
         <TouchableOpacity
           onPress={props.editaItem}
           style={styles.icone}>
@@ -35,7 +33,6 @@ const MenuBarLivro = props => {
             color={'#fff'}/>
 
         </TouchableOpacity>
-
       </View>
     </View>
   )
@@ -48,7 +45,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-end',
-    paddingRight: 10
   },
 
   textoTituloIos: {
@@ -56,6 +52,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     paddingLeft: 30,
+    flex: 1,
   },
 
   textoTituloAndroid: {
@@ -63,11 +60,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     flex: 1,
     fontSize: 20,
-
   },
 
   icone: {
-    flex: 1,
     paddingRight: 10,
     paddingLeft: 10,
     justifyContent: 'center',

@@ -26,10 +26,9 @@ export default class LivroScreen extends React.Component {
     title: 'Livro',
 
     headerTitle:
-
       <MenuLivro
         deletaItem={() => {
-          deletarItem(idLivro);
+          deletarItem(livro, idLivro);
           navigation.goBack();
         }}
 
@@ -49,9 +48,6 @@ export default class LivroScreen extends React.Component {
       backgroundColor: '#00897B',
     },
     headerTintColor: '#fff',
-    headerTitleStyle: {
-      fontWeight: 'bold',
-    },
   };
 
   constructor(props) {
@@ -84,13 +80,13 @@ export default class LivroScreen extends React.Component {
         <View style={styles.card}>
 
           <ImageBackground
-            source={this.state.livro.capa !== "" ? {uri: uriCapa} : null}
+            source={!this.state.livro.capa ? require('../img/default.png') : {uri: uriCapa}}
             blurRadius={1.5}
             style={styles.barraCapa}>
 
             <View style={styles.capaContainer}>
               <Image
-                source={this.state.livro.capa !== "" ? {uri: uriCapa} : null}
+                source={!this.state.livro.capa ? require('../img/default.png') : {uri: uriCapa}}
                 style={styles.capa}/>
             </View>
 

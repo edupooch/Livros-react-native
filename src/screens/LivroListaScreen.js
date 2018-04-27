@@ -1,9 +1,17 @@
 import React from "react";
-import {AsyncStorage, Text, FlatList, StyleSheet, TextInput, TouchableOpacity, View} from "react-native";
+import {
+  AsyncStorage,
+  Text,
+  FlatList,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+  ActivityIndicator
+} from "react-native";
 import {livros} from "../modelo/livros"
 import LivroItem from "../components/livroItem";
 import * as firebase from 'firebase';
-import uuid from 'uuid';
 
 //essa parte do código serve para ignorar o warning de timeout do firebsae durante o debug
 import {YellowBox} from 'react-native';
@@ -24,7 +32,7 @@ export default class LivroListaScreen extends React.Component {
     headerStyle: {
       backgroundColor: '#00897B',
     },
-    headerTintColor: '#fff',
+    headerTintColor: '#ffffff',
     headerTitleStyle: {
       fontWeight: 'bold',
     },
@@ -36,36 +44,30 @@ export default class LivroListaScreen extends React.Component {
     this.state = {
       livros: [],
       input: '',
+      carregando: true,
     };
     this.carregaLivros(this);
   }
 
   iniciaFirebase = () => {
     // Initialize Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyC1vD3B8VDTU33pau6XtbtoSxG1Nr8TXAQ",
-      authDomain: "testappionic-93bec.firebaseapp.com",
-      databaseURL: "https://testappionic-93bec.firebaseio.com",
-      projectId: "testappionic-93bec",
-      storageBucket: "testappionic-93bec.appspot.com",
-      messagingSenderId: "335082067236"
+    const config = {
+      apiKey: "AIzaSyBsfr3rlmZ3rxjYkbzgB2bc6-w90XelOjg",
+      authDomain: "livrosreact.firebaseapp.com",
+      databaseURL: "https://livrosreact.firebaseio.com",
+      projectId: "livrosreact",
+      storageBucket: "livrosreact.appspot.com",
+      messagingSenderId: "225377100092"
     };
 
-    firebase.initializeApp(firebaseConfig);
+    firebase.initializeApp(config);
   };
 
   carregaLivros = (context) => {
     let livrosRef = firebase.database().ref('livros');
     livrosRef.on('value', function (snapshot) {
-      // let keys = Object.keys(snapshot.val());
-      // let livros = keys.map(key => {
-      //   let livro = snapshot.val()[key];
-      //   livro.key = key;
-      //   return livro;
-      // });
       let livros = snapshot.val();
-      context.setState({livros: livros});
-
+      context.setState({livros: livros, carregando: false});
     });
   };
 
@@ -93,44 +95,89 @@ export default class LivroListaScreen extends React.Component {
     let updates = {};
     updates['/livros/' + keyNovoLivro] = livro;
     firebase.database().ref().update(updates);
+    this.handleFiles(livro, keyNovoLivro);
+
     // limpa o campo de adicionar livro na tela de lista
     this.setState({input: ''})
-
     // this.upload(livro.capa)
-
   };
 
+  handleFiles = async (livro, keyLivro) => {
+    try {
+      let updates = {};
+      let urlCapa = "";
+      let urlPdf = "";
+      console.log("handling files");
 
-  upload = async (uri) => {
+      if (livro.capa && !livro.capa.startsWith('http')) {
+        urlCapa = await this.uploadAsync(livro.capa, keyLivro, 'capa');
+        updates['/livros/' + keyLivro + '/capa'] = urlCapa;
+      }
+
+      if (livro.pdf && !livro.pdf.startsWith('http')) {
+        urlPdf = await this.uploadAsync(livro.pdf, keyLivro, 'pdf');
+        updates['/livros/' + keyLivro + '/pdf'] = urlPdf;
+        console.log(urlPdf)
+      }
+
+      if (updates) {
+        firebase.database().ref().update(updates);
+      }
+
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  uploadAsync = async (uri, keyLivro, tipo) => {
+    console.log("uploading");
     const response = await fetch(uri);
     const blob = await response.blob();
     const ref = firebase
       .storage()
       .ref()
-      .child(uuid.v4());
+      .child(keyLivro.toString())
+      .child(tipo);
 
     const snapshot = await ref.put(blob);
     return snapshot.downloadURL;
   };
 
-
-  deletarLivro = (key) => {
+  deletarLivro = (livro, key) => {
     let updates = {};
     updates['/livros/' + key] = null;
     firebase.database().ref().update(updates);
+
+    // deletar arquivos associados ao livro
+    try {
+      firebase.storage().refFromURL(livro.capa).delete().then(function () {
+        // File deleted successfully
+      }).catch(function (error) {
+        console.log(error)
+      });
+    } catch (e) {
+    }
+    try {
+      firebase.storage().refFromURL(livro.pdf).delete().delete().then(function () {
+        // File deleted successfully
+      }).catch(function (error) {
+        console.log(error)
+      });
+    } catch (e) {
+    }
   };
 
   editarLivro = (livro, key) => {
+    this.handleFiles(livro, key);
     let updates = {};
     updates['/livros/' + key] = livro;
     firebase.database().ref().update(updates);
   };
 
-
   render() {
     return (
       <View style={styles.container}>
-
+        {/*barra de adicionar livros*/}
         <View style={styles.card}>
           <TextInput
             onChangeText={(input) => this.setState({input})}
@@ -151,6 +198,10 @@ export default class LivroListaScreen extends React.Component {
           </TouchableOpacity>
         </View>
 
+        {this.state.carregando &&
+        <ActivityIndicator style={{marginTop: 10}} size="large" color="#00897B"/>
+        }
+
         <FlatList
           renderItem={obj =>
             <LivroItem
@@ -158,7 +209,7 @@ export default class LivroListaScreen extends React.Component {
               cliqueLivro={() => this.cliqueLivro(obj)}
             />}
 
-          data={Object.keys(this.state.livros)
+          data={!this.state.livros ? null : Object.keys(this.state.livros)
             .map(key => {
               let livro = this.state.livros[key];
               livro.key = key;
@@ -177,7 +228,6 @@ export default class LivroListaScreen extends React.Component {
   };
 
 }
-
 
 const styles = StyleSheet.create({
   container: {
