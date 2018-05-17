@@ -2,7 +2,7 @@ import React from "react";
 import {Button, Image, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {MaterialIcons, FontAwesome} from '@expo/vector-icons'
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import {ImagePicker, DocumentPicker} from 'expo';
+import {ImagePicker, DocumentPicker, Permissions} from 'expo';
 import Modal from 'react-native-modal';
 
 export default class FormularioLivroScreen extends React.Component {
@@ -117,6 +117,9 @@ export default class FormularioLivroScreen extends React.Component {
   _takePhoto = async () => {
     this.setModalVisible(false);
 
+    const cameraPermission = await Permissions.askAsync(Permissions.CAMERA);
+    const cameraRollPermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    
     let pickerResult = await ImagePicker.launchCameraAsync({
       // allowsEditing: true,
       // aspect: [4, 3],
