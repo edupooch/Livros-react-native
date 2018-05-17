@@ -133,7 +133,9 @@ export default class FormularioLivroScreen extends React.Component {
 
   _pickImage = async () => {
     this.setModalVisible(false);
-
+    
+    const cameraRollPermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    
     let pickerResult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: 'Images',
       quality: 0.7 //qualidade da compressão
